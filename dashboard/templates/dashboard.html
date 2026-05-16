@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>VoltVision - EV Analytics Dashboard</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+      href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body class="dashboard-page">
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg shadow sticky-top">
+        <div class="container-fluid">
+
+            <!-- Brand -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/dashboard/">
+                <img src="{% static 'images/logo.png' %}" alt="VoltVision Logo" class="navbar-logo me-2">
+                <div class="d-flex flex-column align-items-start">
+                    <span class="navbar-brand-title">VoltVision Analytics</span>
+                    <small class="navbar-brand-subtitle">Drive the Future</small>
+                </div>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar Items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <!-- Left Menu -->
+                <ul class="navbar-nav me-auto">
+                    <!-- left-side nav items can be added here -->
+                </ul>
+
+                <!-- Right Side Buttons -->
+                <div class="navbar-actions d-flex gap-2 align-items-center flex-wrap justify-content-end">
+
+                    <!-- Mobile Sidebar Open Button -->
+                    <button id="sidebarOpenBtn" class="btn btn-navbar btn-outline-secondary d-lg-none" title="Open Sidebar">
+                        ☰
+                    </button>
+
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggle" class="btn btn-navbar btn-outline-secondary btn-icon" title="Toggle Dark/Light Theme">
+                        🌙
+                    </button>
+
+                    <!-- Notification Bell -->
+                    <button id="notificationBell" class="btn btn-outline-secondary position-relative" title="Notifications">
+                        🔔
+                        <span id="notificationBadge" class="notification-badge" style="display:none;">0</span>
+                    </button>
+
+                    <a class="btn btn-navbar btn-outline-secondary" href="/dashboard/about/">
+                        About
+                    </a>
+
+                    {% if request.user.is_superuser %}
+                    <a class="btn btn-navbar btn-outline-secondary" href="/admin/">Admin Panel</a>
+                    {% endif %}
+
+                    <div class="live-status me-3">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+
+                    <form action="/logout/" method="POST" style="display:inline;">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-danger">
+                            Logout
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="container-fluid mt-4">
+
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        <div class="col-lg-3 mb-4 sidebar-container" id="sidebarContainer">
+
+            <div class="sidebar-logo mb-4 position-relative">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <img src="{% static 'images/logo.png' %}" alt="VoltVision Logo" class="sidebar-logo-img">
+
+                    <div>
+                        <h4 class="mb-0">VoltVision</h4>
+
+                        <small class="text-muted">
+                            Drive the Future
+                        </small>
+                    </div>
+
+                </div>
+
+                <button id="sidebarToggle" class="btn btn-outline-secondary sidebar-toggle-btn d-none d-lg-inline-flex" title="Toggle Sidebar">
+                    ❮
+                </button>
+
+            </div>
+            <br>    
+            
+            <div class="sidebar-filter shadow">
+
+                <h4 class="mb-4 fw-bold">
+                    Filters ⚙️
+                </h4>
+
+                <!-- STATE FILTER -->
+                <div class="mb-4">
+
+                    <label class="fw-bold mb-2">
+                        Select State
+                    </label>
+
+                    <!-- MULTI SELECT -->
+                    <select id="stateFilter"
+                            class="form-control"
+                            multiple
+                            size="6">
+
+                        {% for state in states_list %}
+                            <option value="{{ state }}">
+                                {{ state }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                    <small class="text-muted">
+                        Hold Ctrl to select multiple states
+                    </small>
+
+                </div>
+
+                <!-- YEAR -->
+                <div class="mb-4">
+
+                    <label class="fw-bold mb-2">
+                        Select Year
+                    </label>
+
+                    <select id="yearFilter"
+                            class="form-control">
+
+                        <option value="All">All</option>
+
+                        {% for year in years_list %}
+                            <option value="{{ year }}">
+                                {{ year }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- MANUFACTURER -->
+                <div class="mb-4">
+
+                    <label class="fw-bold mb-2">
+                        Manufacturer
+                    </label>
+
+                    <input
+                        type="text"
+                        id="makeSearch"
+                        class="form-control"
+                        placeholder="Tesla, Nissan..."
+                        list="makeSuggestions"
+                    >
+
+                    <datalist id="makeSuggestions">
+
+                        {% for make in make_list %}
+                            <option value="{{ make }}">
+                        {% endfor %}
+
+                    </datalist>
+
+                </div>
+
+                <!-- VEHICLE TYPE -->
+                <div class="mb-4">
+
+                    <label class="fw-bold mb-2">
+                        Vehicle Type
+                    </label>
+
+                    <select id="vehicleFilter"
+                            class="form-control">
+
+                        <option value="All">All</option>
+
+                        {% for vehicle in vehicle_type_list %}
+                            <option value="{{ vehicle }}">
+                                {{ vehicle }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- ADVANCED SEARCH -->
+                <div class="mb-4 advanced-search-card">
+                    <label class="fw-bold mb-2">
+                        Advanced Search
+                    </label>
+                    <input type="text"
+                           id="advancedSearchQuery"
+                           class="form-control"
+                           placeholder="Search make, state, year, range...">
+                    <small class="text-muted">
+                        Use keywords to search across all EV fields.
+                    </small>
+                </div>
+
+                <!-- RANGE SLIDER -->
+                <div class="mb-4">
+
+                    <label class="fw-bold mb-2">
+                        Minimum Electric Range:
+                        <span id="rangeValue">0</span> km
+                    </label>
+
+                    <input
+                        type="range"
+                        id="rangeFilter"
+                        class="form-range"
+                        min="0"
+                        max="500"
+                        step="10"
+                        value="0"
+                    >
+
+                </div>
+
+                <!-- RESET BUTTON -->
+                <button class="btn btn-primary w-100"
+                        onclick="resetFilters()">
+
+                    🔄 Reset Filters
+
+                </button>
+
+                <!-- QUICK ACTIONS -->
+                {% if request.user.is_superuser or request.user.groups.all.0.name == "Analyst" %}
+
+                <div class="quick-actions mt-5">
+
+                    <h5 class="quick-title">
+                        ⚡ Quick Actions
+                    </h5>
+
+                    <div class="quick-action-list">
+
+                        <button class="quick-btn csv-btn"
+                                onclick="downloadReport()">
+
+                            <span>📄</span>
+                            Download CSV
+
+                        </button>
+
+                        <button class="quick-btn excel-btn"
+                                onclick="downloadExcel()">
+
+                            <span>📊</span>
+                            Download Excel
+
+                        </button>
+
+                        <button class="quick-btn pdf-btn"
+                                onclick="downloadPDF()">
+
+                            <span>📕</span>
+                            Download PDF
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                <!-- SAVED FILTER PRESETS -->
+                <div class="sidebar-card mt-4">
+
+                    <h5 class="sidebar-heading">
+                        💾 Saved Filter Presets
+                    </h5>
+
+                    <div class="support-box">
+                        <input type="text"
+                               id="presetName"
+                               class="form-control"
+                               placeholder="Enter preset name">
+                        <button type="button"
+                                class="btn btn-primary w-100"
+                                onclick="saveFilterPreset()">
+                            Save Preset
+                        </button>
+                    </div>
+
+                    <div id="presetList" class="mt-3"></div>
+
+                </div>
+
+                <!-- SUPPORT CENTER -->
+                <div id="supportCenter" class="sidebar-card">
+                    <h5 class="sidebar-heading">
+                        🛠 Support Center
+                    </h5>
+
+                    <div class="support-box">
+
+                        <span class="support-text">
+                            Need help using VoltVision Dashboard?
+                        </span>
+
+                        <!-- User Guide Button -->
+                        <button type="button"
+                                class="support-btn secondary-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#userGuideModal">
+
+                            📘 User Guide
+                        </button>
+
+                        <!-- Open Support Center Modal -->
+                        <button type="button"
+                                class="support-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#supportModal">
+
+                            📧 Contact Support
+                        </button>
+
+                        <!-- Feedback -->
+                        <button class="support-btn secondary-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#feedbackModal">
+
+                            💬 Give Feedback
+                        </button>
+
+                    </div>
+
+                </div> 
+
+
+            </div>
+
+        </div>
+
+        
+
+        <!-- MAIN CONTENT -->
+        <div class="col-lg-9 col-12 main-content" id="mainContent">
+
+            <!-- HEADER -->
+            <div class="text-center mb-4">
+
+                <h1 class="fw-bold">
+                    VoltVision Analytics Dashboard ⚡
+                </h1>
+
+                <p class="text-muted">
+                    Real-time EV insights and predictive analytics
+                </p>
+
+            </div>
+
+            <!-- horizontal line -->
+            <hr>
+
+            <!-- LOADER -->
+            <div id="loader" class="text-center" style="display:none;">
+
+                <div class="spinner-border text-primary"
+                    role="status">
+                </div>
+
+                <p class="mt-2">
+                    Loading Dashboard...
+                </p>
+
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="row mb-4">
+
+                <!-- Total EV -->
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card kpi1 p-4 shadow">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Total EV Vehicles</h6>
+                                <h2 id="totalEV">
+                                    {{ kpi_total_ev }}
+                                </h2>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                🚗
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Total States -->
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card kpi2 p-4 shadow">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Total States</h6>
+                                <h2 id="totalStates">
+                                    {{ kpi_total_states }}
+                                </h2>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                🌍
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Average Range -->
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card kpi3 p-4 shadow">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Average Range</h6>
+                                <h2 id="avgRange">
+                                    {{ kpi_avg_range }} km
+                                </h2>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                🔋
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Top Manufacturer -->
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card p-4 shadow"
+                        style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Top Manufacturer</h6>
+
+                                <h5 id="topMake">
+                                    {{ kpi_top_make }}
+                                </h5>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                🏭
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECOND ROW -->
+            <div class="row mb-4">
+
+                <!-- Top Vehicle -->
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card p-4 shadow"
+                        style="background:linear-gradient(135deg,#ea580c,#c2410c);">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Top Vehicle Type</h6>
+
+                                <h5 id="topVehicle">
+                                    {{ kpi_top_vehicle }}
+                                </h5>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                ⚡
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card p-4 shadow"
+                        style="background:linear-gradient(135deg,#0891b2,#0e7490);">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+                                <h6>Top EV State</h6>
+
+                                <h5 id="topState">
+                                    {{ kpi_top_state }}
+                                </h5>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                🏆
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card kpi-card p-4 shadow"
+                        style="background:linear-gradient(135deg,#475569,#334155);">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+                                <h6>Lowest EV State</h6>
+
+                                <h5 id="lowestState">
+                                    {{ kpi_lowest_state }}
+                                </h5>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                📉
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-3">
+
+                    <div class="card kpi-card p-4 shadow"
+                        style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+                                <h6>Market Share Leader</h6>
+
+                                <h5 id="marketLeader">
+                                    {{ kpi_market_leader }}
+                                </h5>
+
+                                <small id="marketShare">
+                                    {{ kpi_market_share }}% Share
+                                </small>
+                            </div>
+
+                            <div style="font-size:40px;">
+                                📈
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TOP STATES LEADERBOARD -->
+            <div class="leaderboard-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h4 class="fw-bold mb-0">
+                        🏆 Top 5 EV States
+                    </h4>
+
+                    <span class="text-muted">
+                        Highest EV registrations
+                    </span>
+
+                </div>
+
+                <div id="leaderboardContainer">
+
+                    {% for state, count in top_states_data %}
+
+                    <div class="leaderboard-item">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="rank-badge
+                                {% if forloop.counter == 1 %}
+                                    rank-1
+                                {% elif forloop.counter == 2 %}
+                                    rank-2
+                                {% elif forloop.counter == 3 %}
+                                    rank-3
+                                {% else %}
+                                    rank-other
+                                {% endif %}
+                            ">
+                                {{ forloop.counter }}
+                            </div>
+
+                            <div class="state-name">
+                                {{ state }}
+                            </div>
+
+                        </div>
+
+                        <div class="ev-count">
+                            {{ count }} EVs
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- CHARTS -->
+            <div class="row g-4">
+
+                <div class="col-12">
+                    <div id="noDataMessage"
+                        class="alert alert-warning text-center mb-0"
+                        style="display:none;">
+
+                        No data found for selected filters ⚠️
+
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-growth h-100">
+                        <div class="chart-title">
+                            EV Growth Over Years
+                        </div>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-distribution h-100">
+                        <div class="chart-title">
+                            Vehicle Type Distribution
+                        </div>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-top-states h-100">
+                        <div class="chart-title">
+                            Top States by EV Count
+                        </div>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-market-share h-100">
+                        <div class="chart-title">
+                            Manufacturer Market Share
+                        </div>
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-yoy h-100">
+                        <div class="chart-title">
+                            Year Over Year Growth %
+                        </div>
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="chart-card chart-forecast h-100">
+                        <div class="chart-title">
+                            EV Sales Forecast 📈
+                        </div>
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="chart-card h-100">
+                        <div class="chart-title">
+                            Top EV Manufacturers
+                        </div>
+                        <canvas id="makeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Battery Efficiency Analysis -->
+                <div class="row mt-4">
+
+                    <div class="col-lg-6 mb-4">
+
+                        <div class="chart-card chart-efficiency h-100">
+
+                            <div class="chart-title">
+                                Top EV Manufacturers by Efficiency
+                            </div>
+
+                            <canvas id="batteryEfficiencyChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+
+                        <div class="chart-card chart-efficiency h-100">
+
+                            <div class="chart-title">
+                                Vehicle Type Efficiency
+                            </div>
+
+                            <canvas id="vehicleTypeEfficiencyChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <br>
+
+            <div class="row mt-4">
+
+                <!-- Fastest Growing States -->
+                <div class="col-md-6">
+                    <div class="chart-card">
+
+                        <h4 class="chart-title">
+                            🚀 Fastest Growing States
+                        </h4>
+
+                        <div id="growthContainer"></div>
+
+                    </div>
+                </div>
+
+                <!-- Declining States -->
+                <div class="col-md-6">
+                    <div class="chart-card">
+
+                        <h4 class="chart-title">
+                            📉 Declining States
+                        </h4>
+
+                        <div id="declineContainer"></div>
+
+                    </div>
+                </div>
+
+                <div class="chart-card mt-4">
+                    <h4 class="chart-title">
+                        EV Growth Insights
+                    </h4>
+
+                    <div id="growthInsights"></div>
+                </div>
+            </div>
+             <!-- INDIA HEATMAP -->
+            <div class="col-12">
+                <div class="chart-card h-100">
+
+                    <div class="chart-title">
+                        India EV Adoption by State Borders 🇮🇳
+                    </div>
+
+                    <div id="indiaMap"
+                        style="height:600px;">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- STATE COMPARISON -->
+            <div class="row mt-4">
+
+                    <div class="col-md-5">
+
+                        <label class="fw-bold">
+                            Compare State 1
+                        </label>
+
+                        <select id="compareState1" class="form-control">
+
+                            <option value="">Select State</option>
+
+                            {% for state in states_list %}
+                                <option value="{{ state }}">
+                                    {{ state }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-5">
+
+                        <label class="fw-bold">
+                            Compare State 2
+                        </label>
+
+                        <select id="compareState2" class="form-control">
+
+                            <option value="">Select State</option>
+
+                            {% for state in states_list %}
+                                <option value="{{ state }}">
+                                    {{ state }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+
+                        <button class="btn btn-dark w-100"
+                                onclick="compareStates()">
+
+                            Compare
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-12 mt-4">
+
+                    <div class="chart-card">
+
+                        <div class="chart-title">
+                            State Comparison Analysis 🌍
+                        </div>
+
+                        <canvas id="comparisonChart"></canvas>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RECENT EV RECORDS TABLE -->
+            <div class="table-card mt-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+                    <div class="chart-title mb-0">
+                        Recent EV Records 📋
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <!-- Table Search -->
+                        <input
+                            type="text"
+                            id="tableSearch"
+                            class="form-control"
+                            placeholder="Search table..."
+                            style="width:220px;"
+                        >
+
+                        <span class="badge bg-primary d-flex align-items-center">
+                            Latest Records
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle recent-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Manufacturer</th>
+                                <th>Vehicle Type</th>
+                                <th>State</th>
+                                <th>Range</th>
+                                <th>Year</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="vehicleTableBody">
+
+                            {% for row in recent_data %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>{{ row.Make }}</strong>
+                                </td>
+
+                                <td>
+                                    {{ row.Vehicle_Type }}
+                                </td>
+
+                                <td>
+                                    {{ row.State }}
+                                </td>
+
+                                <td>
+                                    🔋 {{ row.Electric_Range }} km
+                                </td>
+
+                                <td>
+                                    {{ row.Year }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+
+                        <button class="btn btn-outline-primary"
+                                onclick="changePage(-1)">
+                            Previous
+                        </button>
+
+                        <span id="pageInfo">
+                            Page 1
+                        </span>
+
+                        <button class="btn btn-outline-primary"
+                                onclick="changePage(1)">
+                            Next
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- INSIGHTS -->
+            <div class="insight-box mt-4">
+
+                <h3 class="mb-3">
+                    Dashboard Insights 📊
+                </h3>
+
+                <ul id="insightsList">
+
+                    <li>
+                        Top manufacturer is
+                        <strong>{{ kpi_top_make }}</strong>
+                    </li>
+
+                    <li>
+                        Leading vehicle type is
+                        <strong>{{ kpi_top_vehicle }}</strong>
+                    </li>
+
+                    <li>
+                        Top EV state is
+                        <strong>{{ kpi_top_state }}</strong>
+                    </li>
+
+                    <li>
+                        Market leader owns
+                        <strong>{{ kpi_market_share }}%</strong>
+                        market share
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <!-- EV TREND RECOMMENDATIONS -->
+
+            <div class="insight-box mt-4">
+
+                <h3 class="mb-3">
+                    EV Trend Recommendations 🚗
+                </h3>
+
+                <ul id="recommendationList">
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+window.dashboardData = {
+
+    years: JSON.parse('{{ years|escapejs }}'),
+    sales: JSON.parse('{{ sales|escapejs }}'),
+
+    states: JSON.parse('{{ states|escapejs }}'),
+    state_sales: JSON.parse('{{ state_sales|escapejs }}'),
+
+    vehicle_types: JSON.parse('{{ vehicle_types|escapejs }}'),
+    vehicle_sales: JSON.parse('{{ vehicle_sales|escapejs }}'),
+
+    makes: JSON.parse('{{ makes|escapejs }}'),
+    make_sales: JSON.parse('{{ make_sales|escapejs }}'),
+    battery_efficiency_labels: JSON.parse('{{ battery_efficiency_labels|escapejs }}'),
+    battery_efficiency_values: JSON.parse('{{ battery_efficiency_values|escapejs }}'),
+    vehicle_efficiency_labels: JSON.parse('{{ vehicle_efficiency_labels|escapejs }}'),
+    vehicle_efficiency_values: JSON.parse('{{ vehicle_efficiency_values|escapejs }}'),
+
+    yoy_growth: JSON.parse('{{ yoy_growth|escapejs }}'),
+
+    forecast_years:
+        JSON.parse('{{ forecast_years|escapejs }}'),
+
+    forecast_sales:
+        JSON.parse('{{ forecast_sales|escapejs }}'),
+
+    map_states: JSON.parse('{{ map_states|escapejs }}'),
+    map_sales: JSON.parse('{{ map_sales|escapejs }}'),
+
+    fastest_growing: JSON.parse('{{ fastest_growing|escapejs }}'),
+    declining_states: JSON.parse('{{ declining_states|escapejs }}'),
+
+};
+
+</script>
+
+<!-- SUPPORT CENTER MODAL -->
+
+<div class="modal fade"
+     id="supportModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-md">
+
+        <div class="modal-content support-modal">
+
+            <!-- HEADER -->
+
+            <div class="modal-header border-0" id="supportCenter">
+
+                <h3 class="modal-title fw-bold">
+                    💬 Support Center
+                </h3>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <!-- SUPPORT CARD -->
+
+                <div class="support-box">
+
+                    <h5>
+                        📧 Email Support
+                    </h5>
+
+                    <p>
+                        support@voltvision.com
+                    </p>
+
+                </div>
+
+                <div class="support-box">
+
+                    <h5>
+                        ⏱ Response Time
+                    </h5>
+
+                    <p>
+                        Usually within 24 hours
+                    </p>
+
+                </div>
+
+                <div class="support-box">
+
+                    <h5>
+                        🛠 Common Issues
+                    </h5>
+
+                    <ul class="support-list">
+
+                        <li>
+                            Charts not loading
+                        </li>
+
+                        <li>
+                            Filters not updating
+                        </li>
+
+                        <li>
+                            PDF download issue
+                        </li>
+
+                        <li>
+                            Slow dashboard performance
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="d-grid gap-3 mt-4">
+
+                    <a href="mailto:support@voltvision.com?subject=VoltVision Dashboard Support Request"
+                       class="btn btn-primary">
+
+                        📧 Send Email
+                    </a>
+
+                    <button class="btn btn-outline-light"
+                            data-bs-dismiss="modal">
+
+                        Close
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="notificationPanel" class="notification-panel shadow-sm">
+    <div class="notification-panel-header d-flex justify-content-between align-items-center">
+        <strong>Notifications</strong>
+        <button type="button" class="btn-close" id="closeNotificationsBtn" aria-label="Close"></button>
+    </div>
+    <div id="notificationList" class="notification-list"></div>
+    <button type="button" class="btn btn-sm btn-secondary w-100 mt-2" id="clearNotificationsBtn">Clear Notifications</button>
+</div>
+
+<!-- USER GUIDE MODAL -->
+
+<div class="modal fade"
+     id="userGuideModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content guide-modal">
+
+            <!-- HEADER -->
+
+            <div class="modal-header border-0">
+
+                <h3 class="modal-title fw-bold">
+                    📘 VoltVision User Guide
+                </h3>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <!-- STEP -->
+
+                <div class="guide-step">
+
+                    <div class="guide-number">
+                        1
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Use Filters
+                        </h5>
+
+                        <p>
+                            Select states, years,
+                            manufacturers, and vehicle types
+                            from the sidebar filters.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- STEP -->
+
+                <div class="guide-step">
+
+                    <div class="guide-number">
+                        2
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Analyze Charts
+                        </h5>
+
+                        <p>
+                            Explore EV growth trends,
+                            state adoption, market share,
+                            and forecast analytics.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- STEP -->
+
+                <div class="guide-step">
+
+                    <div class="guide-number">
+                        3
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Compare States
+                        </h5>
+
+                        <p>
+                            Use the comparison section
+                            to compare EV adoption
+                            between two states.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- STEP -->
+
+                <div class="guide-step">
+
+                    <div class="guide-number">
+                        4
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Download Reports
+                        </h5>
+
+                        <p>
+                            Export CSV, Excel,
+                            and PDF reports using
+                            Quick Actions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- STEP -->
+
+                <div class="guide-step">
+
+                    <div class="guide-number">
+                        5
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Interactive Insights
+                        </h5>
+
+                        <p>
+                            Hover over charts and maps
+                            to view detailed EV insights.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal fade"
+     id="feedbackModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Submit Feedback
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form id="feedbackForm">
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="feedbackText" class="form-label">Your Feedback</label>
+                        <!-- Email field pre-filled with user's email -->
+                        <div class="mb-3">
+
+                            <label for="feedbackEmail"
+                                class="form-label">
+
+                                Email
+                            </label>
+
+                            <input type="email"
+                                class="form-control"
+                                id="feedbackEmail"
+                                value="{{ request.user.email }}"
+                                readonly>
+
+                        </div>
+                        <!-- Rating dropdown -->
+                        <div class="mb-3">
+
+                            <label for="feedbackRating"
+                                class="form-label">
+
+                                Rating
+                            </label>
+
+                            <select class="form-select"
+                                    id="feedbackRating">
+
+                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                <option value="4">⭐⭐⭐⭐ Good</option>
+                                <option value="3">⭐⭐⭐ Average</option>
+                                <option value="2">⭐⭐ Poor</option>
+                                <option value="1">⭐ Very Poor</option>
+
+                            </select>
+
+                        </div>
+                        <textarea class="form-control"
+                                  id="feedbackText"
+                                  name="feedback"
+                                  rows="5"
+                                  placeholder="Write your feedback here..."
+                                  required></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Close
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            id="submitFeedbackBtn">
+
+                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        Submit
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FOOTER -->
+<footer class="footer mt-5">
+
+    <div class="container-fluid">
+
+        <div class="row g-4 align-items-center">
+
+            <!-- LEFT -->
+
+            <div class="col-lg-4">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <img src="{% static 'images/logo.png' %}" 
+                         alt="VoltVision Logo"
+                         class="footer-logo">
+
+                    <div>
+                        <h4 class="footer-title mb-1">
+                            VoltVision Dashboard
+                        </h4>
+
+                        <p class="footer-text mb-0">
+                            Smart EV Analytics Platform
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CENTER -->
+
+            <div class="col-lg-4 text-center">
+
+                <div class="footer-links">
+
+                    <!-- DASHBOARD -->
+
+                    <a href="/dashboard/" class="footer-link">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                    </a>
+                   
+                     <!-- HELP -->
+
+                    <a href="#"
+                    class="footer-link"
+                    data-bs-toggle="modal"
+                    data-bs-target="#userGuideModal">
+
+                        <i class="fas fa-circle-question"></i>
+                        Help
+                    </a>
+
+                    <!-- SUPPORT -> CONTACT SUPPORT -->
+
+                    <a href="#"
+                    class="footer-link"
+                    data-bs-toggle="modal"
+                    data-bs-target="#supportModal">
+
+                        <i class="fas fa-headset"></i>
+                        Support
+                    </a>
+
+                </div>
+
+                
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="col-lg-4 text-lg-end text-center">
+
+                <p class="footer-tech mb-1">
+                    Built with Django • Bootstrap • Chart.js
+                </p>
+
+                <p class="footer-copy mb-0">
+                    © 2026 VoltVision Analytics Dashboard
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+</body>
+</html>

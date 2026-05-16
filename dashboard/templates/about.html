@@ -1,0 +1,365 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        About | VoltVision
+    </title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{% static 'css/about.css' %}">
+
+</head>
+
+<body class="about-page">
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+
+        <div class="container">
+
+            <a class="navbar-brand fw-bold d-flex align-items-center"
+               href="/dashboard/">
+                <img src="{% static 'images/logo.png' %}" alt="VoltVision Logo" class="navbar-logo me-2">
+                VoltVision
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse"
+                 id="navbarNav">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/dashboard/">
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           href="/dashboard/about/">
+                            About
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- HERO SECTION -->
+
+    <section class="hero-section">
+
+        <div class="container text-center">
+
+            <h1 class="display-4 fw-bold mb-4">
+                About VoltVision ⚡
+            </h1>
+
+            <p class="lead">
+
+                Smart EV Analytics Platform designed to analyze,
+                visualize, and predict Electric Vehicle growth trends
+                across India.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- ABOUT CONTENT -->
+
+    <section class="container py-5">
+
+        <div class="row g-4">
+
+            <!-- LEFT -->
+
+            <div class="col-lg-6">
+
+                <div class="about-card h-100">
+
+                    <h2 class="section-title">
+                        📌 Project Overview
+                    </h2>
+
+                    <p>
+                        VoltVision is a data-driven Electric Vehicle
+                        Analytics Dashboard developed using Django,
+                        JavaScript, Chart.js, and Plotly.
+                    </p>
+
+                    <p>
+                        The platform helps users explore EV trends,
+                        manufacturer performance, vehicle distribution,
+                        growth forecasting, and state-wise EV adoption
+                        using interactive visualizations.
+                    </p>
+
+                    <p>
+                        It transforms raw EV datasets into meaningful
+                        insights for analysis and decision-making.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="col-lg-6">
+
+                <div class="about-card h-100">
+
+                    <h2 class="section-title">
+                        🎯 Objectives
+                    </h2>
+
+                    <ul class="feature-list">
+
+                        <li>
+                            Analyze EV growth trends
+                        </li>
+
+                        <li>
+                            Visualize state-wise EV adoption
+                        </li>
+
+                        <li>
+                            Compare manufacturer market share
+                        </li>
+
+                        <li>
+                            Predict future EV growth
+                        </li>
+
+                        <li>
+                            Provide downloadable reports
+                        </li>
+
+                        <li>
+                            Build an interactive analytics platform
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FEATURES -->
+
+        <div class="about-card mt-4">
+
+            <h2 class="section-title text-center mb-4">
+                🚀 Key Features
+            </h2>
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            📊 Interactive Charts
+                        </h4>
+
+                        <p>
+                            Dynamic visualizations using Chart.js
+                            and Plotly.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            🌍 India Heatmap
+                        </h4>
+
+                        <p>
+                            State-wise EV adoption visualization
+                            across India.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            📈 Forecast Analytics
+                        </h4>
+
+                        <p>
+                            EV growth prediction and YoY analysis.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            🔍 Smart Filters
+                        </h4>
+
+                        <p>
+                            Advanced filtering by state, year,
+                            vehicle type, and manufacturer.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            📥 Report Downloads
+                        </h4>
+
+                        <p>
+                            Export dashboard reports in PDF,
+                            Excel, and CSV formats.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="feature-box">
+
+                        <h4>
+                            ⚡ Responsive UI
+                        </h4>
+
+                        <p>
+                            Modern responsive interface using
+                            Bootstrap 5.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TECH STACK -->
+
+        <div class="about-card mt-4 text-center">
+
+            <h2 class="section-title mb-4">
+                💻 Technologies Used
+            </h2>
+
+            <div class="tech-stack">
+
+                <span class="tech-badge">
+                    Django
+                </span>
+
+                <span class="tech-badge">
+                    Python
+                </span>
+
+                <span class="tech-badge">
+                    JavaScript
+                </span>
+
+                <span class="tech-badge">
+                    Chart.js
+                </span>
+
+                <span class="tech-badge">
+                    Plotly
+                </span>
+
+                <span class="tech-badge">
+                    Bootstrap 5
+                </span>
+
+                <span class="tech-badge">
+                    HTML5
+                </span>
+
+                <span class="tech-badge">
+                    CSS3
+                </span>
+
+                <span class="tech-badge">
+                    SQLite
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <div class="container text-center">
+
+            <p class="mb-0">
+                © 2026 VoltVision | EV Analytics Dashboard ⚡
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

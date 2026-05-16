@@ -1,0 +1,25 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+
+<div style="margin-bottom:20px;">
+
+    <a href="{{ upload_csv_url }}"
+       style="
+       background:#0d6efd;
+       color:white;
+       padding:10px 20px;
+       text-decoration:none;
+       border-radius:5px;
+       font-weight:bold;
+       ">
+
+       Upload CSV File
+
+    </a>
+
+</div>
+
+{{ block.super }}
+
+{% endblock %}

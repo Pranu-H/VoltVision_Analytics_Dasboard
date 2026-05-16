@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+<link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+<!-- Optional: same font as dashboard -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+{% endblock %}
+
+{% block branding %}
+<div class="admin-branding">
+    <div class="brand-left">
+        <img src="{% static 'images/logo.png' %}" class="admin-logo">
+        <div>
+            <h1 id="site-name">VoltVision</h1>
+            <span class="subtitle">Admin Control Center</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div class="nav-actions">
+    <a href="/dashboard/" class="dashboard-btn">
+        🚗 Open Dashboard
+    </a>
+</div>
+{% endblock %}

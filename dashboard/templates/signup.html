@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-card">
+
+    <h2 class="auth-title">Create Account</h2>
+
+    <p class="auth-subtitle">
+        Join VoltVision Dashboard
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="auth-form-group">
+            <label>Username</label>
+
+            <input
+                type="text"
+                name="username"
+                class="auth-input"
+                placeholder="Enter username"
+                required
+            >
+        </div>
+
+        <div class="auth-form-group">
+            <label>Password</label>
+
+            <input
+                type="password"
+                name="password1"
+                class="auth-input"
+                placeholder="Enter password"
+                required
+            >
+        </div>
+
+        <div class="auth-form-group">
+            <label>Confirm Password</label>
+
+            <input
+                type="password"
+                name="password2"
+                class="auth-input"
+                placeholder="Confirm password"
+                required
+            >
+        </div>
+
+        <button type="submit" class="auth-btn">
+            Create Account
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+        Already have an account?
+        <a href="{% url 'login' %}">
+            Login
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

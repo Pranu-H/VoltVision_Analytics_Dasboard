@@ -1,0 +1,184 @@
+/* ABOUT PAGE STYLING */
+
+body.about-page {
+    margin: 0;
+    min-height: 100%;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, rgba(14, 29, 70, 0.95), transparent 38%),
+                radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.15), transparent 35%),
+                #07101f;
+    color: #e2e8f0;
+    overflow-x: hidden;
+}
+
+.navbar {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 0;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+}
+
+.navbar-logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 3px;
+}
+
+.nav-link {
+    color: #cbd5e1 !important;
+    margin-left: 18px;
+    transition: color 0.25s ease;
+    font-weight: 600;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #38bdf8 !important;
+}
+
+.hero-section {
+    padding: 90px 20px 70px;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+}
+
+.hero-section p {
+    max-width: 760px;
+    margin: auto;
+    color: #cbd5e1;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.about-card,
+.feature-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
+}
+
+.about-card:hover,
+.feature-box:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.85);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.about-card {
+    padding: 34px;
+}
+
+.section-title {
+    font-size: clamp(2rem, 2.2vw, 2.6rem);
+    font-weight: 800;
+    margin-bottom: 1.4rem;
+    color: #f8fafc;
+}
+
+.about-card p,
+.feature-box p,
+.feature-list li {
+    color: #cbd5e1;
+    line-height: 1.75;
+    font-size: 1rem;
+}
+
+.feature-list {
+    padding-left: 18px;
+}
+
+.feature-list li {
+    margin-bottom: 14px;
+}
+
+.feature-box {
+    padding: 26px;
+    min-height: 180px;
+}
+
+.feature-box h4 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #f8fafc;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+}
+
+.tech-badge {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+    transition: transform 0.25s ease;
+}
+
+.tech-badge:hover {
+    transform: scale(1.05);
+}
+
+.footer {
+    margin-top: 80px;
+    padding: 30px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    background: rgba(7, 16, 31, 0.72);
+}
+
+@media (max-width: 992px) {
+    .hero-section {
+        padding: 70px 20px 55px;
+    }
+
+    .about-card {
+        padding: 28px;
+    }
+
+    .feature-box {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+
+    .navbar-toggler {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+}

@@ -1,0 +1,145 @@
+/* GLOBAL BACKGROUND */
+
+body {
+    background: radial-gradient(circle at top left,
+                rgba(14, 29, 70, 0.95),
+                transparent 38%),
+                radial-gradient(circle at bottom right,
+                rgba(56, 189, 248, 0.15),
+                transparent 35%),
+                #07101f !important;
+
+    color: #e2e8f0 !important;
+    font-family: Inter, sans-serif;
+}
+
+/* HEADER */
+
+#header {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    height: auto;
+    padding: 15px 30px;
+}
+
+/* BRAND */
+
+.admin-branding {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-logo {
+    width: 42px;
+    height: 42px;
+    background: white;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+#site-name {
+    color: white !important;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* DASHBOARD BUTTON */
+
+.dashboard-btn {
+    background: linear-gradient(135deg,#2563eb,#0ea5e9);
+    color: white !important;
+    padding: 10px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* CONTENT AREA */
+
+#content {
+    padding: 25px;
+}
+
+/* MODULES */
+
+.module,
+.dashboard .module,
+.inline-group {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    margin-bottom: 25px;
+}
+
+/* TABLES */
+
+#changelist table {
+    background: transparent;
+}
+
+thead th {
+    background: rgba(255,255,255,0.08) !important;
+    color: white !important;
+}
+
+tbody tr {
+    background: transparent !important;
+}
+
+tbody tr:hover {
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* TEXT */
+
+a {
+    color: #7dd3fc !important;
+}
+
+a:hover {
+    color: #38bdf8 !important;
+}
+
+/* INPUTS */
+
+input,
+textarea,
+select {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+/* BUTTONS */
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input {
+    background: linear-gradient(135deg,#2563eb,#0ea5e9) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 10px 18px !important;
+}
+
+/* SIDEBAR */
+
+#nav-sidebar {
+    background: rgba(15,23,42,0.92) !important;
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+#nav-sidebar a {
+    color: #cbd5e1 !important;
+}
+
+#nav-sidebar a:hover {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
