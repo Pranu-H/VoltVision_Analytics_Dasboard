@@ -1,1 +1,1 @@
-web: gunicorn ev_project.wsgi
+web: gunicorn ev_project.wsgi:application
