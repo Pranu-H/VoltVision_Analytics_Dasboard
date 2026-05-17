@@ -1,7 +1,10 @@
-EV/
-venv/
 __pycache__/
 *.pyc
-db.sqlite3
+*.pyo
+*.pyd
+.env
+venv/
+EV/
 staticfiles/
-.git
+media/
+.git/

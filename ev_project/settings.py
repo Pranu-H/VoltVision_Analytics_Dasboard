@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-m(^5*geo)91k5yu+((w3p@^d38336n3+7t6=m%s189f^=z(+-n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['voltvision-analytics-dasboard.onrender.com']
-
+ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
