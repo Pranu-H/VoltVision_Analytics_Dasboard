@@ -54,11 +54,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ev_project.urls'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
